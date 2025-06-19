@@ -34,6 +34,8 @@ export const Blog = ({ posts }) => {
           {/* 博客列表 此处优先展示3片文章 */}
           <div className='-mx-4 flex flex-wrap'>
             {posts?.map((item, index) => {
+              // const defaultUrl = 'https://api.rls.ovh/adaptive?t=0424afd9-e873-4fab-8d61-cdd126b63d11'
+              const defaultUrl = 'https://api.rls.ovh/adaptive'
               return (
                 <div key={index} className='w-full px-4 md:w-1/2 lg:w-1/3'>
                   <div
@@ -43,7 +45,7 @@ export const Blog = ({ posts }) => {
                       {item.pageCoverThumbnail && (
                         <Link href={item?.href} className='block'>
                           <img
-                            src={item.pageCoverThumbnail}
+                            src={item.pageCoverThumbnail || defaultUrl}
                             alt={item.title}
                             className='w-full transition group-hover:rotate-6 group-hover:scale-125'
                           />

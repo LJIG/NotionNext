@@ -10,18 +10,18 @@ const CONFIG = {
 
   // 英雄区块导航
   STARTER_HERO_ENABLE: true, // 开启英雄区
-  STARTER_HERO_TITLE_1: '开源且免费的基于 Notion 笔记的网站构建工具', // 英雄区文字
-  STARTER_HERO_TITLE_2: '通过笔记无感知地建站、成倍放大您的价值', // 英雄区文字
+  STARTER_HERO_TITLE_1: '正在学习，如何使用金钱帮组自己快速成长和节省成本', // 英雄区文字
+  STARTER_HERO_TITLE_2: '金钱是最好的外挂，使用他人劳动成果，飞速成长', // 英雄区文字
   // 英雄区两个按钮，如果TEXT留空则隐藏按钮
   STARTER_HERO_BUTTON_1_TEXT: '开始体验', // 英雄区按钮
   STARTER_HERO_BUTTON_1_URL:
     'https://docs.tangly1024.com/article/vercel-deploy-notion-next', // 英雄区按钮
   STARTER_HERO_BUTTON_2_TEXT: '在Github上关注', // 英雄区按钮
-  STARTER_HERO_BUTTON_2_URL: 'https://github.com/tangly1024/NotionNext', // 英雄区按钮
+  STARTER_HERO_BUTTON_2_URL: 'https://github.com/LJIG/JwChat', // 英雄区按钮
   STARTER_HERO_BUTTON_2_ICON: '/images/starter/github.svg', // 英雄区按钮2的图标，不需要则留空
 
   // 英雄区配图，如需隐藏，改为空值即可 ''
-  STARTER_HERO_PREVIEW_IMAGE: '/images/starter/hero/hero-image.webp', // 产品预览图 ，默认读取public目录下图片
+  STARTER_HERO_PREVIEW_IMAGE: '/images/starter/hero/hero-image1.png', // 产品预览图 ，默认读取public目录下图片
   STARTER_HERO_BANNER_IMAGE: '', // hero区下方的全宽图
 
   // 顶部右侧导航暗流
@@ -33,35 +33,34 @@ const CONFIG = {
 
   // 特性区块
   STARTER_FEATURE_ENABLE: true, // 特性区块开关
-  STARTER_FEATURE_TITLE: '特性', // 特性
-  STARTER_FEATURE_TEXT_1: 'NotionNext的主要特性', // 特性
+  STARTER_FEATURE_TITLE: '工具', // 特性
+  STARTER_FEATURE_TEXT_1: '效率、时间、成果', // 特性
   STARTER_FEATURE_TEXT_2:
-    'NotionNext的愿景是帮助您简单、无感知地稳定地搭建自己的网站，放大品牌的价值。 ', // 特性
+    '节省时间提高效率降低心知损耗。全心全意专注结果，更快获得结果。 ', // 特性
 
-  STARTER_FEATURE_1_TITLE_1: '免费且开源', // 特性1
-  STARTER_FEATURE_1_TEXT_1: '项目源码在Github上完全开放共享，遵循MIT协议', // 特性1
+  STARTER_FEATURE_1_TITLE_1: 'JwChat', // 特性1
+  STARTER_FEATURE_1_TEXT_1: '一款Vue聊天界面组件, 支持PC和移动端。', // 特性1
   STARTER_FEATURE_1_BUTTON_TEXT: '了解更多', // 特性1
-  STARTER_FEATURE_1_BUTTON_URL: 'https://github.com/tangly1024/NotionNext', // 特性1
+  STARTER_FEATURE_1_BUTTON_URL: 'https://github.com/LJIG/JwChat', // 特性1
 
-  STARTER_FEATURE_2_TITLE_1: '多种主题定制', // 特性2
-  STARTER_FEATURE_2_TEXT_1: '数十种主题,适用于不同场景，总有一款适合你', // 特性2
+  STARTER_FEATURE_2_TITLE_1: 'JwMap', // 特性2
+  STARTER_FEATURE_2_TEXT_1: '快速接入并使用高德地图，绘制你的专属轨迹。', // 特性2
   STARTER_FEATURE_2_BUTTON_TEXT: '了解更多', // 特性2
-  STARTER_FEATURE_2_BUTTON_URL:
-    'https://docs.tangly1024.com/article/notion-next-themes', // 特性2
+  STARTER_FEATURE_2_BUTTON_URL: 'https://github.com/LJIG/JwMap', // 特性2
 
   STARTER_FEATURE_3_TITLE_1: '优秀的性能', // 特性3
   STARTER_FEATURE_3_TEXT_1: '基于NextJS开发，更快的响应速度，更好的SEO', // 特性3
   STARTER_FEATURE_3_BUTTON_TEXT: '了解更多', // 特性3
   STARTER_FEATURE_3_BUTTON_URL: 'https://docs.tangly1024.com/article/next-js', // 特性3
 
-  STARTER_FEATURE_4_TITLE_1: '便捷的写作体验', // 特性4
-  STARTER_FEATURE_4_TEXT_1: '只需在Notion笔记中编修，自动同步到网站', // 特性4
-  STARTER_FEATURE_4_BUTTON_TEXT: '了解更多', // 特性4
-  STARTER_FEATURE_4_BUTTON_URL: 'https://docs.tangly1024.com/about', // 特性4
+  // STARTER_FEATURE_4_TITLE_1: '便捷的写作体验2', // 特性4
+  // STARTER_FEATURE_4_TEXT_1: '只需在Notion笔记中编修，自动同步到网站', // 特性4
+  // STARTER_FEATURE_4_BUTTON_TEXT: '了解更多1', // 特性4
+  // STARTER_FEATURE_4_BUTTON_URL: 'https://docs.tangly1024.com/about', // 特性4
 
   // 首页ABOUT区块
   STARTER_ABOUT_ENABLE: true, // ABOUT区块开关
-  STARTER_ABOUT_TITLE: '一套轻量实用的建站解决方案',
+  STARTER_ABOUT_TITLE: '让数字长上眼睛，代码解决繁节琐事',
   STARTER_ABOUT_TEXT:
     'NotionNext的愿景是帮助非技术人员的小白，最低成本、最快速地搭建自己的网站，帮助您将自己的产品与故事高效地传达给世界。 <br /> <br /> 功能强大的Notion笔记，简单快速的Vercel托管平台，组成一个简单的网站',
   STARTER_ABOUT_BUTTON_TEXT: '了解更多',
@@ -79,13 +78,13 @@ const CONFIG = {
   STARTER_PRICING_TEXT_2:
     '我们制定了灵活的付费模式，您可以按需选择。（NotionNext免费开源，这里仅演示产品订阅付费功能，请勿下单购买！）',
 
-  STARTER_PRICING_1_TITLE: '入门版',
-  STARTER_PRICING_1_PRICE: '19.9',
-  STARTER_PRICING_1_PRICE_CURRENCY: '$',
+  STARTER_PRICING_1_TITLE: '开源版本',
+  STARTER_PRICING_1_PRICE: '0.0',
+  STARTER_PRICING_1_PRICE_CURRENCY: '¥',
   STARTER_PRICING_1_PRICE_PERIOD: '每月',
   STARTER_PRICING_1_HEADER: '功能点',
   STARTER_PRICING_1_FEATURES: '所有的主题,免费更新,帮助手册', // 英文逗号隔开
-  STARTER_PRICING_1_BUTTON_TEXT: '立即购买',
+  STARTER_PRICING_1_BUTTON_TEXT: '立即使用',
   STARTER_PRICING_1_BUTTON_URL:
     'https://tangly1024.lemonsqueezy.com/checkout/buy/c1a38a65-362e-44c5-8065-733fee39eb54',
 
@@ -178,8 +177,8 @@ const CONFIG = {
   //   FAQ 常见问题模块
   STARTER_FAQ_ENABLE: true, // 常见问题模块开关
   STARTER_FAQ_TITLE: '常见问题解答',
-  STARTER_FAQ_TEXT_1: '有任何问题吗？请看这里',
-  STARTER_FAQ_TEXT_2: '我们收集了常见的用户疑问',
+  STARTER_FAQ_TEXT_1: '减少认知负担，专注结果',
+  STARTER_FAQ_TEXT_2: '技术进步的多元化道路',
 
   STARTER_FAQ_1_QUESTION: 'NotionNext有帮助文档吗？',
   STARTER_FAQ_1_ANSWER:
@@ -231,7 +230,7 @@ const CONFIG = {
 
   // 博客文章区块
   STARTER_BLOG_ENABLE: true, // 首页博文区块开关
-  STARTER_BLOG_TITLE: '我们的博客',
+  STARTER_BLOG_TITLE: '我的博客',
   STARTER_BLOG_COUNT: 3, // 首页博文区块默认展示前3篇文章
   STARTER_BLOG_TEXT_1: '最近的新闻',
   STARTER_BLOG_TEXT_2:
@@ -242,9 +241,9 @@ const CONFIG = {
   STARTER_CONTACT_TITLE: '联系我们',
   STARTER_CONTACT_TEXT: '告诉我们您遇到的问题',
   STARTER_CONTACT_LOCATION_TITLE: '我们的位置',
-  STARTER_CONTACT_LOCATION_TEXT: '中国，福建',
+  STARTER_CONTACT_LOCATION_TEXT: '内蒙古，包头',
   STARTER_CONTACT_EMAIL_TITLE: '我们如何帮助您？',
-  STARTER_CONTACT_EMAIL_TEXT: 'mail@tangly1024.com',
+  STARTER_CONTACT_EMAIL_TEXT: '389701057@qq.com',
 
   // 嵌入外部表单
   STARTER_CONTACT_MSG_EXTERNAL_URL: 'https://noteforms.com/forms/yfctc7', // 基于NoteForm创建，将留言数据存在Notion中

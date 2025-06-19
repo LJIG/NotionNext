@@ -79,7 +79,7 @@ export const Hero = props => {
                 <div
                   className='wow fadeInUp relative z-10 mx-auto max-w-[845px]'
                   data-wow-delay='.25s'>
-                  <div className='mt-16'>
+                  <div className='mt-16 bg-white h-[400px] flex items-center justify-center'>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={siteConfig(
@@ -89,7 +89,7 @@ export const Hero = props => {
                       )}
                       alt={siteConfig('TITLE', null, config)}
                       title={siteConfig('TITLE', null, config)}
-                      className='mx-auto max-w-full rounded-t-xl rounded-tr-xl'
+                      className='mx-auto max-w-full rounded-t-xl rounded-tr-xl h-full'
                     />
                   </div>
 
