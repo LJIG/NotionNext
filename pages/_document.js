@@ -65,13 +65,16 @@ class MyDocument extends Document {
           <script dangerouslySetInnerHTML={{ __html: darkModeScript }} />
 
 
-          <script type="text/javascript">
-            (function(c,l,a,r,i,t,y){
-              c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
-              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, "clarity", "script", "wuvckcxth8");
-          </script>
+          <script type="text/javascript"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function(c,l,a,r,i,t,y){
+                  c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "wuvckcxth8");`
+            }} />
+
         </Head>
 
         <body>
