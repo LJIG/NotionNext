@@ -1,9 +1,9 @@
-const { THEME } = require('./blog.config')
 const fs = require('node:fs')
 const path = require('node:path')
 const BLOG = require('./blog.config')
 const { extractLangPrefix } = require('./lib/utils/pageId')
 const { isExport } = require('./lib/utils/buildMode')
+const { getStaticPageGenerationTimeoutSec } = require('./lib/build/buildEnv')
 
 // 打包时是否分析代码
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
@@ -32,13 +32,36 @@ const locales = (function () {
   return langs
 })()
 
-// next dev 启动时提示：开发环境默认读/写 Notion 缓存（见 conf/dev.config.js 中 ENABLE_CACHE）
+// next dev 时配置可能被多个 worker 各自加载一次，globalThis 无法跨进程去重；用独占文件锁只打印一行。
 ;(function printDevCacheHint() {
   if (process.env.npm_lifecycle_event !== 'dev') return
-  if (globalThis.__NOTIONNEXT_DEV_CACHE_HINT_PRINTED__) return
-  globalThis.__NOTIONNEXT_DEV_CACHE_HINT_PRINTED__ = true
-  console.log('\n[NotionNext] Dev cache is ON (ENABLE_CACHE=true).')
-  console.log('[NotionNext] Need realtime data? Set ENABLE_CACHE=false in .env.local\n')
+  const lockFile = path.join(__dirname, '.next', 'dev-cache-hint.lock')
+  const siblingWindowMs = 15_000 // 同一次 dev 内多 worker；间隔超过则视为新会话，删掉旧锁再提示
+  try {
+    fs.mkdirSync(path.dirname(lockFile), { recursive: true })
+    if (fs.existsSync(lockFile)) {
+      const age = Date.now() - fs.statSync(lockFile).mtimeMs
+      if (age < siblingWindowMs) {
+        return
+      }
+      try {
+        fs.unlinkSync(lockFile)
+      } catch (err) {
+        if (err && err.code !== 'ENOENT') return
+      }
+    }
+  } catch (_) {
+    return
+  }
+  try {
+    fs.closeSync(fs.openSync(lockFile, 'wx'))
+  } catch (e) {
+    if (e && e.code === 'EEXIST') return
+    return
+  }
+  console.log(
+    '[NotionNext] Dev cache ON (ENABLE_CACHE=true); live Notion data → ENABLE_CACHE=false in .env.local'
+  )
 })()
 
 // 编译前执行
@@ -66,11 +89,29 @@ const preBuild = (function () {
     console.log('Deleted existing sitemap.xml from root directory')
   }
 
+  // 构建前删除遗留的静态 RSS 产物，避免与生成逻辑不一致时读到过时 feed（源自 PR #3123 的单一补丁）
+  const rssDir = path.resolve(__dirname, 'public', 'rss')
+  for (const name of ['feed.xml', 'atom.xml', 'feed.json']) {
+    const rssPath = path.join(rssDir, name)
+    if (fs.existsSync(rssPath)) {
+      fs.unlinkSync(rssPath)
+      console.log(`Deleted existing ${name} from public/rss`)
+    }
+  }
+
   const notionCacheRoot = path.resolve(__dirname, '.next', 'cache', 'notion')
+  const dataDir = path.join(notionCacheRoot, 'data')
   const prefetchDir = path.join(notionCacheRoot, 'sessions')
   const sessionFile = path.join(notionCacheRoot, 'build-session.json')
   const sessionId = `${process.env.npm_lifecycle_event}-${Date.now()}-${process.pid}`
 
+  if (process.env.NOTION_BUILD_CACHE_PURGE_DATA === 'true') {
+    fs.rmSync(dataDir, { recursive: true, force: true })
+    console.log('Purged persistent Notion data cache')
+  } else {
+    pruneTransientNotionDataCache(dataDir)
+    console.log('Preserved versioned Notion page block cache')
+  }
   fs.rmSync(prefetchDir, { recursive: true, force: true })
   fs.mkdirSync(notionCacheRoot, { recursive: true })
   fs.writeFileSync(
@@ -88,6 +129,38 @@ const preBuild = (function () {
   )
   console.log('Prepared Notion build session', sessionId)
 })()
+
+function isVersionedPageBlockCacheKey(key) {
+  return /^page_block_.+_\d{10,}$/.test(String(key || ''))
+}
+
+function pruneTransientNotionDataCache(dataDir) {
+  if (!fs.existsSync(dataDir)) {
+    return
+  }
+
+  let removed = 0
+  let kept = 0
+  for (const name of fs.readdirSync(dataDir)) {
+    if (!name.endsWith('.json')) continue
+
+    const file = path.join(dataDir, name)
+    try {
+      const entry = JSON.parse(fs.readFileSync(file, 'utf8'))
+      if (isVersionedPageBlockCacheKey(entry?.key)) {
+        kept++
+        continue
+      }
+    } catch {}
+
+    fs.rmSync(file, { force: true })
+    removed++
+  }
+
+  console.log(
+    `Pruned transient Notion cache entries: removed=${removed} kept=${kept}`
+  )
+}
 
 /**
  * 扫描指定目录下的文件夹名，用于获取所有主题
@@ -125,7 +198,7 @@ const nextConfig = {
     ignoreDuringBuilds: true
   },
   output: getOutput(),
-  staticPageGenerationTimeout: 300,
+  staticPageGenerationTimeout: getStaticPageGenerationTimeoutSec(),
 
   // 性能优化配置
   compress: true,
@@ -229,6 +302,19 @@ const nextConfig = {
 
       return [
         ...langsRewrites,
+        // RSS fallback: when static file doesn't exist, route to API
+        {
+          source: '/rss/feed.xml',
+          destination: '/api/rss'
+        },
+        {
+          source: '/rss/atom.xml',
+          destination: '/api/rss?format=atom'
+        },
+        {
+          source: '/rss/feed.json',
+          destination: '/api/rss?format=json'
+        },
         // 伪静态重写
         {
           source: '/:path*.html',
@@ -240,6 +326,15 @@ const nextConfig = {
     ? undefined
     : () => {
       return [
+        {
+          source: '/vendor/fontawesome/:path*',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable'
+            }
+          ]
+        },
         {
           source: '/:path*{/}?',
           headers: [
@@ -317,12 +412,13 @@ const nextConfig = {
 
     if (!isServer) {
       console.log(
-        '[ThemeResolver][webpack-default-only]',
+        '[ThemeResolver][webpack]',
         JSON.stringify({
-          note: 'This is only webpack default theme alias, not final runtime theme.',
+          note:
+            'Layouts load via dynamic import(@/themes/<name>). Theme folder follows runtime NEXT_PUBLIC_THEME / Notion; no compile-time @theme-components alias.',
           envTheme: process.env.NEXT_PUBLIC_THEME || null,
-          configTheme: THEME,
-          resolvedDefaultThemePath: path.resolve(__dirname, 'themes', THEME)
+          configTheme: BLOG.THEME,
+          themeFolderPath: path.resolve(__dirname, 'themes', BLOG.THEME)
         })
       )
       config.resolve.fallback = {
@@ -334,12 +430,6 @@ const nextConfig = {
         path: false
       }
     }
-    config.resolve.alias['@theme-components'] = path.resolve(
-      __dirname,
-      'themes',
-      THEME
-    )
-
     return config
   }
   ,

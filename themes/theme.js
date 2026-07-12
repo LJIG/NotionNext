@@ -1,5 +1,4 @@
 import BLOG, { LAYOUT_MAPPINGS } from '@/blog.config'
-import * as ThemeComponents from '@theme-components'
 import getConfig from 'next/config'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
@@ -10,6 +9,64 @@ export const { THEMES = [] } = getConfig()?.publicRuntimeConfig || {}
 const baseLayoutCache = new Map()
 const layoutByThemeCache = new Map()
 let domFixTimer = null
+
+const LayoutLoading = () => (
+  <div className='min-h-screen w-full bg-[#f6f6f1] dark:bg-black' />
+)
+
+const IndexLayoutLoading = () => (
+  <div className='pt-10 md:pt-18 w-full bg-[#f6f6f1] dark:bg-black'>
+    <div className='mx-auto w-full max-w-screen-3xl px-4 py-10 lg:px-0'>
+      <div className='grid gap-10 xl:grid-cols-2'>
+        <section className='space-y-5'>
+          <div className='h-80 w-full animate-pulse bg-gray-200 dark:bg-gray-800' />
+          <div className='h-10 w-4/5 animate-pulse bg-gray-200 dark:bg-gray-800' />
+          <div className='h-4 w-2/3 animate-pulse bg-gray-200 dark:bg-gray-800' />
+          <div className='h-4 w-24 animate-pulse bg-gray-200 dark:bg-gray-800' />
+        </section>
+        <section className='space-y-6'>
+          <div className='h-48 w-full animate-pulse bg-gray-200 dark:bg-gray-800' />
+          {[0, 1].map(item => (
+            <div
+              key={item}
+              className='flex gap-6 border-t border-gray-300 pt-6 dark:border-gray-800'>
+              <div className='min-w-0 flex-1 space-y-3'>
+                <div className='h-6 w-4/5 animate-pulse bg-gray-200 dark:bg-gray-800' />
+                <div className='h-4 w-2/3 animate-pulse bg-gray-200 dark:bg-gray-800' />
+                <div className='h-4 w-20 animate-pulse bg-gray-200 dark:bg-gray-800' />
+              </div>
+              <div className='h-32 w-32 shrink-0 animate-pulse bg-gray-200 dark:bg-gray-800' />
+            </div>
+          ))}
+        </section>
+      </div>
+
+      <section className='mt-12'>
+        <div className='flex items-center justify-between'>
+          <div className='h-7 w-28 animate-pulse bg-gray-200 dark:bg-gray-800' />
+          <div className='h-5 w-24 animate-pulse bg-gray-200 dark:bg-gray-800' />
+        </div>
+        <div className='mt-6 grid gap-8 md:grid-cols-2 xl:grid-cols-4'>
+          {[0, 1, 2, 3].map(item => (
+            <div
+              key={item}
+              className='space-y-4 border-t border-gray-300 pt-5 dark:border-gray-800'>
+              <div className='h-5 w-3/4 animate-pulse bg-gray-200 dark:bg-gray-800' />
+              <div className='h-4 w-24 animate-pulse bg-gray-200 dark:bg-gray-800' />
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  </div>
+)
+
+const getLayoutLoading = layoutName => {
+  if (layoutName === 'LayoutIndex') {
+    return IndexLayoutLoading
+  }
+  return LayoutLoading
+}
 
 const normalizeThemeName = themeValue => {
   if (!themeValue || typeof themeValue !== 'string') return BLOG.THEME
@@ -29,50 +86,39 @@ const scheduleFixThemeDOM = (delay = 120) => {
   }, delay)
 }
 
+async function importThemeConfig(themeFolderName) {
+  try {
+    const mod = await import(`@/themes/${themeFolderName}`)
+    return mod?.THEME_CONFIG ?? null
+  } catch (err) {
+    console.error(`Failed to load theme config "${themeFolderName}":`, err)
+    return null
+  }
+}
+
 /**
- * 获取主题配置
+ * 获取主题配置（始终动态加载，与运行时 BLOG.THEME / URL ?theme 一致；不依赖编译期别名）。
  * @param {string} themeQuery - 主题查询参数（支持多个主题用逗号分隔）
- * @returns {Promise<object>} 主题配置对象
+ * @returns {Promise<object|null>} 主题配置对象
  */
 export const getThemeConfig = async themeQuery => {
   const themeName = normalizeThemeName(themeQuery)
-
-  // 处理主题与默认一致时，直接返回默认配置
-  if (!themeName || themeName === BLOG.THEME) {
-    return ThemeComponents?.THEME_CONFIG
+  let cfg = await importThemeConfig(themeName)
+  if (cfg) {
+    return cfg
   }
-
-  // 如果 themeQuery 存在且不等于默认主题，处理多主题情况
-  try {
-    // 动态导入主题配置
-    const THEME_CONFIG = await import(`@/themes/${themeName}`)
-      .then(m => m.THEME_CONFIG)
-      .catch(err => {
-        console.error(`Failed to load theme ${themeName}:`, err)
-        return null // 主题加载失败时返回 null 或者其他默认值
-      })
-
-    // 如果主题配置加载成功，返回配置
-    if (THEME_CONFIG) {
-      return THEME_CONFIG
-    } else {
-      // 如果加载失败，返回默认主题配置
+  const fallback = normalizeThemeName(BLOG.THEME)
+  if (fallback !== themeName) {
+    cfg = await importThemeConfig(fallback)
+    if (cfg) {
       console.warn(
-        `Loading ${themeName} failed. Falling back to default theme.`
+        `[theme] "${themeName}" config unavailable, using fallback "${fallback}".`
       )
-      return ThemeComponents?.THEME_CONFIG
+      return cfg
     }
-  } catch (error) {
-    // 如果 import 过程中出现异常，返回默认主题配置
-    console.error(
-      `Error loading theme configuration for ${themeName}:`,
-      error
-    )
-    return ThemeComponents?.THEME_CONFIG
   }
-
-  // 如果没有 themeQuery 或 themeQuery 与默认主题相同，返回默认主题配置
-  return ThemeComponents?.THEME_CONFIG
+  console.error('[theme] No theme configuration could be loaded.')
+  return null
 }
 
 /**
@@ -92,22 +138,25 @@ const getCurrentTheme = (router, fallbackTheme) => {
  * @returns
  */
 export const getBaseLayoutByTheme = theme => {
-  const LayoutBase = ThemeComponents['LayoutBase']
   const normalizedTheme = normalizeThemeName(theme)
-  const isDefaultTheme = !normalizedTheme || normalizedTheme === BLOG.THEME
-  if (!isDefaultTheme) {
-    if (baseLayoutCache.has(normalizedTheme)) {
-      return baseLayoutCache.get(normalizedTheme)
-    }
-    const DynamicBaseLayout = dynamic(
-      () => import(`@/themes/${normalizedTheme}`).then(m => m['LayoutBase']),
-      { ssr: true }
-    )
-    baseLayoutCache.set(normalizedTheme, DynamicBaseLayout)
-    return DynamicBaseLayout
+  if (baseLayoutCache.has(normalizedTheme)) {
+    return baseLayoutCache.get(normalizedTheme)
   }
-
-  return LayoutBase
+  const DynamicBaseLayout = dynamic(
+    () =>
+      import(`@/themes/${normalizedTheme}`).then(m => {
+        const Base = m['LayoutBase']
+        if (!Base) {
+          throw new Error(
+            `[theme] LayoutBase missing in themes/${normalizedTheme}`
+          )
+        }
+        return Base
+      }),
+    { ssr: true }
+  )
+  baseLayoutCache.set(normalizedTheme, DynamicBaseLayout)
+  return DynamicBaseLayout
 }
 
 /**
@@ -127,37 +176,33 @@ export const DynamicLayout = props => {
  * @returns
  */
 export const useLayoutByTheme = ({ layoutName, theme }) => {
-  // const layoutName = getLayoutNameByPath(router.pathname, router.asPath)
-  const LayoutComponents =
-    ThemeComponents[layoutName] || ThemeComponents.LayoutSlug
-
   const router = useRouter()
   const themeQuery = getCurrentTheme(router, theme)
-  const isDefaultTheme = !themeQuery || themeQuery === BLOG.THEME
+  const cacheKey = `${themeQuery}:${layoutName}`
 
-  // 加载非当前默认主题
-  if (!isDefaultTheme) {
-    const cacheKey = `${themeQuery}:${layoutName}`
-    if (layoutByThemeCache.has(cacheKey)) {
-      scheduleFixThemeDOM(240)
-      return layoutByThemeCache.get(cacheKey)
-    }
-    const DynamicLayoutComponent = dynamic(
-      () =>
-        import(`@/themes/${themeQuery}`).then(componentsSource => {
-          return (
-            componentsSource[layoutName] || componentsSource.LayoutSlug
-          )
-        }),
-      { ssr: true }
-    )
-    layoutByThemeCache.set(cacheKey, DynamicLayoutComponent)
-    scheduleFixThemeDOM(240)
-    return DynamicLayoutComponent
+  if (layoutByThemeCache.has(cacheKey)) {
+    scheduleFixThemeDOM(themeQuery === BLOG.THEME ? 80 : 240)
+    return layoutByThemeCache.get(cacheKey)
   }
 
-  scheduleFixThemeDOM(80)
-  return LayoutComponents
+  const loadLayout = () =>
+    import(`@/themes/${themeQuery}`).then(componentsSource => {
+      const Selected =
+        componentsSource[layoutName] || componentsSource.LayoutSlug
+      if (!Selected) {
+        throw new Error(
+          `[theme] Layout "${layoutName}" missing in themes/${themeQuery}`
+        )
+      }
+      return Selected
+    })
+  const DynamicLayoutComponent = dynamic(loadLayout, {
+    ssr: true,
+    loading: getLayoutLoading(layoutName)
+  })
+  layoutByThemeCache.set(cacheKey, DynamicLayoutComponent)
+  scheduleFixThemeDOM(themeQuery === BLOG.THEME ? 80 : 240)
+  return DynamicLayoutComponent
 }
 
 /**

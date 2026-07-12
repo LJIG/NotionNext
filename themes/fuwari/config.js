@@ -26,13 +26,15 @@ const CONFIG = {
   /** 是否显示右侧封面图区域 */
   FUWARI_POST_LIST_COVER: true,
   /** 无文章封面时，是否用站点横幅图（HOME_BANNER_IMAGE）作默认图 */
-  FUWARI_POST_LIST_COVER_DEFAULT: true,
+  FUWARI_POST_LIST_COVER_DEFAULT: false,
   /** 封面悬停轻微放大 */
   FUWARI_POST_LIST_COVER_HOVER_ENLARGE: true,
   /** 显示摘要（有 summary 时） */
   FUWARI_POST_LIST_SUMMARY: true,
   /** 卡片内显示标签 */
   FUWARI_POST_LIST_TAG: true,
+  /** 桌面端列表卡片封面列宽度（px），增大则更扁长横向 */
+  FUWARI_POST_LIST_COVER_COL_WIDTH: 280,
 
   // ---------------------------------------------------------------------------
   // 移动端
@@ -123,11 +125,13 @@ const CONFIG = {
   // ---------------------------------------------------------------------------
   // 文章页
   // ---------------------------------------------------------------------------
+  /** 有 Notion 封面时，在详情页文章卡片内顶部展示封面图（object-cover，不占满屏） */
+  FUWARI_ARTICLE_COVER_HERO: false,
   /** 文首：日期、分类、标签等元信息 */
   FUWARI_ARTICLE_META: true,
   /** 分享条 */
   FUWARI_ARTICLE_SHARE: true,
-  /** 文末版权信息块 */
+  /** 文章版权声明：true 全部显示；false 全部关闭；custom 仅填写 copyright 时显示 */
   FUWARI_ARTICLE_COPYRIGHT: true,
   /** 文末评论区（需在 `blog.config.js` 配置任一种评论服务，如 COMMENT_GISCUS_REPO / COMMENT_TWIKOO_ENV_ID 等，否则不渲染） */
   FUWARI_ARTICLE_COMMENT: true,
