@@ -1,4 +1,5 @@
 import { siteConfig } from '@/lib/config'
+import Script from 'next/script';
 import { convertInnerUrl } from '@/lib/db/notion/convertInnerUrl'
 import { isBrowser, loadExternalResource } from '@/lib/utils'
 import dynamic from 'next/dynamic'
@@ -226,8 +227,8 @@ const ExternalPlugin = props => {
 
       {ANALYTICS_51LA_ID && ANALYTICS_51LA_CK && (
         <>
-          <script id='LA_COLLECT' src='//sdk.51.la/js-sdk-pro.min.js' defer />
-          {/* <script async dangerouslySetInnerHTML={{
+          <Script id='LA_COLLECT' src='//sdk.51.la/js-sdk-pro.min.js' defer />
+          {/* <Script async dangerouslySetInnerHTML={{
               __html: `
                     LA.init({id:"${ANALYTICS_51LA_ID}",ck:"${ANALYTICS_51LA_CK}",hashMode:true,autoTrack:true})
                     `
@@ -237,12 +238,12 @@ const ExternalPlugin = props => {
 
       {CHATBASE_ID && (
         <>
-          <script
+          <Script
             id={CHATBASE_ID}
             src='https://www.chatbase.co/embed.min.js'
             defer
           />
-          <script
+          <Script
             async
             dangerouslySetInnerHTML={{
               __html: `
@@ -257,7 +258,7 @@ const ExternalPlugin = props => {
 
       {CLARITY_ID && (
         <>
-          <script
+          <Script
             async
             dangerouslySetInnerHTML={{
               __html: `
@@ -284,7 +285,7 @@ const ExternalPlugin = props => {
       {COMMENT_DAO_VOICE_ID && (
         <>
           {/* DaoVoice 反馈 */}
-          <script
+          <Script
             async
             dangerouslySetInnerHTML={{
               __html: `
@@ -308,7 +309,7 @@ const ExternalPlugin = props => {
                 `
             }}
           />
-          <script
+          <Script
             async
             dangerouslySetInnerHTML={{
               __html: `
@@ -342,23 +343,23 @@ const ExternalPlugin = props => {
         </>
       )}
 
-      {/* {COMMENT_TWIKOO_ENV_ID && <script defer src={COMMENT_TWIKOO_CDN_URL} />} */}
+      {/* {COMMENT_TWIKOO_ENV_ID && <Script defer src={COMMENT_TWIKOO_CDN_URL} />} */}
 
-      {COMMENT_ARTALK_SERVER && <script defer src={COMMENT_ARTALK_JS} />}
+      {COMMENT_ARTALK_SERVER && <Script defer src={COMMENT_ARTALK_JS} />}
 
       {COMMENT_TIDIO_ID && (
-        <script async src={`//code.tidio.co/${COMMENT_TIDIO_ID}.js`} />
+        <Script async src={`//code.tidio.co/${COMMENT_TIDIO_ID}.js`} />
       )}
 
       {/* gitter聊天室 */}
       {COMMENT_GITTER_ROOM && (
         <>
-          <script
+          <Script
             src='https://sidecar.gitter.im/dist/sidecar.v1.js'
             async
             defer
           />
-          <script
+          <Script
             async
             dangerouslySetInnerHTML={{
               __html: `
@@ -373,7 +374,7 @@ const ExternalPlugin = props => {
 
       {/* 百度统计 */}
       {ANALYTICS_BAIDU_ID && (
-        <script
+        <Script
           async
           dangerouslySetInnerHTML={{
             __html: `
@@ -391,7 +392,7 @@ const ExternalPlugin = props => {
 
       {/* 站长统计 */}
       {ANALYTICS_CNZZ_ID && (
-        <script
+        <Script
           async
           dangerouslySetInnerHTML={{
             __html: `
@@ -403,17 +404,17 @@ const ExternalPlugin = props => {
 
       {/* UMAMI 统计 */}
       {UMAMI_ID && (
-        <script async defer src={UMAMI_HOST} data-website-id={UMAMI_ID}></script>
+        <Script async defer src={UMAMI_HOST} data-website-id={UMAMI_ID} />
       )}
 
       {/* 谷歌统计 */}
       {ANALYTICS_GOOGLE_ID && (
         <>
-          <script
+          <Script
             async
             src={`https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_GOOGLE_ID}`}
           />
-          <script
+          <Script
             async
             dangerouslySetInnerHTML={{
               __html: `
@@ -431,7 +432,7 @@ const ExternalPlugin = props => {
 
       {/* Matomo 统计 */}
       {MATOMO_HOST_URL && MATOMO_SITE_ID && (
-        <script
+        <Script
           async
           dangerouslySetInnerHTML={{
             __html: `

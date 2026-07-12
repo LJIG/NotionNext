@@ -10,8 +10,8 @@ const CONFIG = {
 
   // 英雄区块导航
   STARTER_HERO_ENABLE: true, // 开启英雄区
-  STARTER_HERO_TITLE_1: '正在学习，如何使用金钱帮组自己快速成长和节省成本', // 英雄区文字
-  STARTER_HERO_TITLE_2: '金钱是最好的外挂，使用他人劳动成果，飞速成长', // 英雄区文字
+  STARTER_HERO_TITLE_1: '祖国正北方靓丽内蒙古', // 英雄区文字
+  STARTER_HERO_TITLE_2: '吃喝玩录', // 英雄区文字
   // 英雄区两个按钮，如果TEXT留空则隐藏按钮
   STARTER_HERO_BUTTON_1_TEXT: '开始体验', // 英雄区按钮
   STARTER_HERO_BUTTON_1_URL:
