@@ -4,6 +4,11 @@ import { siteConfig } from '@/lib/config'
  * 另一个落地页主题
  */
 const CONFIG = {
+  STARTER_COLOR_PRIMARY: '#3758f9',
+  STARTER_COLOR_PRIMARY_HOVER: '#1b44c8',
+  STARTER_COLOR_DARK: '#111928',
+  STARTER_COLOR_TEXT_MUTED: '#637381',
+
   // 默认只展示Logo文字，如果设置了logo图片，会在文字左侧显示图标
   STARTER_LOGO: '', // 普通logo图片 示例：/images/starter/logo/logo.svg
   STARTER_LOGO_WHITE: '', // 透明底浅色logo 示例： /images/starter/logo/logo-white.svg
@@ -16,8 +21,7 @@ const CONFIG = {
   STARTER_HERO_TITLE_2: '吃喝玩录', // 英雄区文字
   // 英雄区两个按钮，如果TEXT留空则隐藏按钮
   STARTER_HERO_BUTTON_1_TEXT: '开始体验', // 英雄区按钮
-  STARTER_HERO_BUTTON_1_URL:
-    'https://docs.tangly1024.com/article/vercel-deploy-notion-next', // 英雄区按钮
+  STARTER_HERO_BUTTON_1_URL: 'https://notionnext.tangly1024.com/', // 英雄区按钮
   STARTER_HERO_BUTTON_2_TEXT: '在Github上关注', // 英雄区按钮
   STARTER_HERO_BUTTON_2_URL: 'https://github.com/LJIG/JwChat', // 英雄区按钮
   STARTER_HERO_BUTTON_2_ICON: '/images/starter/github.svg', // 英雄区按钮2的图标，不需要则留空
@@ -203,7 +207,7 @@ const CONFIG = {
   STARTER_TEAM_TITLE: '团队成员',
   STARTER_TEAM_TEXT_1: '我们的开发者团队',
   STARTER_TEAM_TEXT_2:
-    'NotionNext 由众多开源技术爱好者们共同合作完成，感谢每一位<a className="underline" href="https://github.com/tangly1024/NotionNext/graphs/contributors">贡献者</a>',
+    'NotionNext 由众多开源技术爱好者们共同合作完成，感谢每一位<a className="underline" href="https://github.com/notionnext-org/NotionNext/graphs/contributors">贡献者</a>',
 
   // 这里不支持CONFIG和环境变量，需要一一修改此处代码。
   STARTER_TEAM_ITEMS: [
@@ -368,8 +372,7 @@ const CONFIG = {
   STARTER_CTA_DESCRIPTION:
     '访问NotionNext的操作文档，我们提供了详细的教程，帮助你即刻搭建站点',
   STARTER_CTA_BUTTON: true, // 是否显示按钮
-  STARTER_CTA_BUTTON_URL:
-    'https://docs.tangly1024.com/article/vercel-deploy-notion-next',
+  STARTER_CTA_BUTTON_URL: 'https://notionnext.tangly1024.com/',
   STARTER_CTA_BUTTON_TEXT: '开始体验',
 
   STARTER_POST_REDIRECT_ENABLE: true, // 默認開啟重定向
